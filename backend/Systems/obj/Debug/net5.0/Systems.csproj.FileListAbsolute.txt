@@ -1,0 +1,15 @@
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\Systems.deps.json
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\Systems.dll
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\ref\Systems.dll
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\Systems.pdb
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\Newtonsoft.Json.dll
+E:\03工作源码\NETJDC\Systems\bin\Debug\net5.0\Newtonsoft.Json.xml
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.GeneratedMSBuildEditorConfig.editorconfig
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.AssemblyInfoInputs.cache
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.AssemblyInfo.cs
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.csproj.CoreCompileInputs.cache
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.csproj.CopyComplete
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.dll
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\ref\Systems.dll
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.pdb
+E:\03工作源码\NETJDC\Systems\obj\Debug\net5.0\Systems.csprojAssemblyReference.cache
