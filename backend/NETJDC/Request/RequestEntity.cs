@@ -9,7 +9,7 @@ namespace NETJDC.Request
     {
         public string Phone { get; set; }
         public int qlkey { get; set; } = 0;
-
+        public string QQ { get; set; } = "";
         public string Code { get; set; }
     }
     public class RequestDEL

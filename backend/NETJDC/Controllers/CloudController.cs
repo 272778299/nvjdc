@@ -42,29 +42,38 @@ namespace NETJDC.Controllers
         [HttpGet, Route("Config")]
         public async Task<IActionResult> Config()
         {
-          
-            if(_mainConfig.Config.Count==0) throw new Exception("没有配置青龙服务器,检查配置");
-            var list = _mainConfig.Config.Select(x => new { x.QLkey, x.QLName, x.QL_CAPACITY }).ToList();
+            var list = new List<Qlitem>();
+            var type = Enum.GetName(typeof(UpTypeEum), _mainConfig.UPTYPE);
+            var ckcount = 0;
+            if (_mainConfig.Config.Count>0)
+            {
+                list = _mainConfig.Config.Select(x => new Qlitem { QLkey = x.QLkey, QLName = x.QLName, QL_CAPACITY = x.QL_CAPACITY }).ToList();
+                var config = _mainConfig.Config.First();
+                var qlcount = await config.GetEnvsCount();
+                ckcount = config.QL_CAPACITY - qlcount;
+                if (ckcount < 0) ckcount = 0;
+               
+            }
+            
             ResultModel<object> result = ResultModel<object>.Create(true, "");
-            var config = _mainConfig.Config.First();
-            var qlcount = await config.GetEnvsCount();
-            var ckcount = config.QL_CAPACITY-qlcount;
-            if (ckcount < 0) ckcount = 0;
             string MaxTab = _mainConfig.MaxTab;
             string Announcement = _mainConfig.Announcement;
             var intabcount= _PageServer.GetPageCount();
             int tabcount = int.Parse(MaxTab) - intabcount;
-            result.data = new { list=list, ckcount= ckcount , tabcount = tabcount , announcement = Announcement };
+            result.data = new { type= type, list =list, ckcount= ckcount , tabcount = tabcount , announcement = Announcement };
             return Ok(result);
         }
         [HttpGet, Route("QLConfig")]
         public async Task<IActionResult> QLConfig(int qlkey)
         {
+            var ckcount = 0;
             ResultModel<object> result = ResultModel<object>.Create(true, "");
-            if (qlkey==0) throw new Exception("请选择配置");
-            var config = _mainConfig.GetConfig(qlkey);
-            var qlcount = await config.GetEnvsCount();
-            var ckcount = config.QL_CAPACITY - qlcount;
+            if (_mainConfig.UPTYPE == UpTypeEum.ql)
+            {
+                var config = _mainConfig.GetConfig(qlkey);
+                var qlcount = await config.GetEnvsCount();
+                ckcount = config.QL_CAPACITY - qlcount;
+            }
             string MaxTab = _mainConfig.MaxTab;
             var intabcount = _PageServer.GetPageCount();
             int tabcount = int.Parse(MaxTab) - intabcount;
@@ -91,16 +100,15 @@ namespace NETJDC.Controllers
             int qlkey =  obj.qlkey;
             ResultModel<object> result = ResultModel<object>.Create(true, "");
            
-           
             try
             {
                
                 if (string.IsNullOrEmpty(Phone)) throw new Exception("请输入手机号码");
-                if (qlkey==0) throw new Exception("请选择服务器");
+                if (_mainConfig.UPTYPE == UpTypeEum.ql&&qlkey == 0) throw new Exception("请选择服务器");
               
                 if (!CheckPhoneIsAble(Phone)) throw new Exception("请输入正确的手机号码");
                 await _PageServer.PageClose(Phone);
-                result = await _PageServer.OpenJDTab(qlkey, Phone);
+                result = await _PageServer.OpenJDTab(qlkey, Phone, _mainConfig.UPTYPE == UpTypeEum.ql);
             }
             catch (Exception e)
             {
@@ -130,7 +138,7 @@ namespace NETJDC.Controllers
                 var timestamp = env["timestamp"].ToString();
                 var remarks = env["remarks"].ToString();
                 var nickname = await GetNickname(env["value"].ToString());
-                result.data = new { qlid = qlid, qlkey = qlkey, timestamp = timestamp, remarks = remarks , nickname=nickname,qrurl= config.QRurl};
+                result.data = new { qlid = qlid, qlkey = qlkey,ck= env["value"].ToString(), timestamp = timestamp, remarks = remarks , nickname=nickname,qrurl= config.QRurl};
             }
             catch (Exception e)
             {
@@ -227,14 +235,16 @@ namespace NETJDC.Controllers
             string Phone = obj.Phone;
             int qlkey = obj.qlkey;
             string Code = obj.Code;
+            string qq = obj.QQ;
             ResultModel<object> result = ResultModel<object>.Create(true, "");
             if(string.IsNullOrEmpty(Phone)) throw new Exception("请输入手机号码");
             if (!CheckPhoneIsAble(Phone)) throw new Exception("请输入正确的手机号码");
             if (string.IsNullOrEmpty(Code)) throw new Exception("请输入验证码");
-            if (qlkey==0) throw new Exception("请选择服务器");
+            if (_mainConfig.UPTYPE == UpTypeEum.ql && qlkey ==0) throw new Exception("请选择服务器");
+            if (_mainConfig.UPTYPE == UpTypeEum.xdd && string.IsNullOrEmpty(qq)) throw new Exception("输入QQ号");
             try
             {
-                 result = await _PageServer.VerifyCode(qlkey,Phone, Code);
+                 result = await _PageServer.VerifyCode(qlkey,qq,Phone, Code);
                
             }catch( Exception e)
             {
